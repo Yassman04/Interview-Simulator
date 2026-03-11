@@ -1,5 +1,5 @@
 # Interview Simulator
-Allows the user to have a mock interview with an ai model that will provide questions for the related job, feedback on the answers, a transcript so the user can review exactly what they said, monitor body language and other features
+An AI-driven mock interview platform providing role-specific questions, real-time feedback, and full speech transcripts.
 
 ## Installation & Setup
 Follow these exact steps to configure the environment and install the necessary drivers for the Interview Simulator.
