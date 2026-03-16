@@ -1,2 +1,4 @@
 pyaudio
 websockets
+mediapipe
+opencv-python
