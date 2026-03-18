@@ -14,3 +14,4 @@ dotenv_path = os.path.join(root_dir, ".env")
 load_dotenv(dotenv_path)
 
 API_KEY = os.getenv("API_KEY")
+Interviewer_API_KEY = os.getenv("Interviewer_API_KEY")

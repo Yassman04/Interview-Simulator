@@ -31,7 +31,7 @@ def listen_to_user():
     full_answer = ""
     is_recording = True
 
-    print("\n------ Connecting to interviewer ------")
+    print("\n------ ANSWERING ------")
 
     with connect(URL, additional_headers=headers) as ws:
         
@@ -62,7 +62,7 @@ def listen_to_user():
         receiver_thread.start()
         sender_thread.start()
 
-        print("\nSpeak naturally.")
+        print("\nMicrophone is active.")
         input("Press ENTER when you are finished answering\n")
         
         is_recording = False 

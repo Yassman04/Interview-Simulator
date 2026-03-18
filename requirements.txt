@@ -2,3 +2,4 @@ pyaudio
 websockets
 mediapipe
 opencv-python
+google-genai
