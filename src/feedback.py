@@ -1,7 +1,5 @@
-# src/feedback.py
-
 def generate_feedback(client, transcript, job_role):
-    print("\n--- Generating Feedback ---")
+    print("\n===== Generating Feedback =====")
     
     
     # Format the transcript into a readable string
@@ -17,14 +15,35 @@ def generate_feedback(client, transcript, job_role):
     
     {transcript_text}
     
-    Please provide constructive feedback for the candidate. Highlight what they did well, point out areas for improvement, and give specific advice on how they can give stronger answers next time. Keep it professional, concise, and encouraging.
+    Please provide constructive feedback for the candidate. Highlight what they did well, point out areas for improvement, and give specific advice on how they can give stronger answers next time.
+    
+    FORMATTING RULES:
+    1. DO NOT use any Markdown formatting whatsoever. No asterisks, no bolding, no italics.
+    2. Use plain text only.
+    3. Use ALL CAPS for section headers to make them stand out.
+    
+    Please structure your response exactly like this templaten including the gaps between answers:
+    ======[THE QUESTION BEING ANSWERED] ======
+
+    QUESTION 1: [Insert Question Here]
+
+      ISSUE: [Briefly state the issue]
+
+      ADVICE: [Give actionable advice]
+
+      EXAMPLE: [Provide a concrete example of a better answer]
+      
+    (Repeat this structure for all questions)
+    
+    FINAL ENCOURAGEMENT:
+    [Provide a short encouraging closing statement]
     """
     
-    # Generate the feedback using the new SDK (we use models.generate_content for a one-off prompt)
+    # Generate the feedback using the new SDK 
     response = client.models.generate_content(
         model="gemini-2.5-flash-lite",
         contents=evaluation_prompt
     )
     
-    print("\n--- Performance Review ---")
+    print("\n===== Performance Review =====")
     print(response.text)

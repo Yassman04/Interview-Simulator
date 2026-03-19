@@ -1,15 +1,9 @@
-from speech_to_text import listen_to_user
+from interviewer import run_mock_interview
 
 
-def run_interview():
-    print("\nWelcome to your mock interview.")
-
-    # This calls your function from the other file
-    user_answer = listen_to_user()
-
-    print(f"\n-------- FULL TRANSCRIPT --------\n\n {user_answer}")
-    # Next step: Send user_answer to the LLM...
+def main():
+    run_mock_interview()
 
 
 if __name__ == "__main__":
-    run_interview()
+    main()
