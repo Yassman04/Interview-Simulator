@@ -1,11 +1,13 @@
 # Interview Simulator
+
 An AI-driven mock interview platform providing role-specific questions, real-time feedback, and full speech transcripts.
 
 ## Installation & Setup
+
 Follow these exact steps to configure the environment and install the necessary drivers for the Interview Simulator.
 
 1. Environment Initialization
-It is recommended to use a virtual environment to ensure dependency isolation.
+   It is recommended to use a virtual environment to ensure dependency isolation.
 
 ## Create the environment
 
@@ -26,33 +28,34 @@ source venv/bin/activate
 ```
 
 2. Dependency Installation
-Once the environment is active, install the core libraries required for audio processing and networking:
+   Once the environment is active, install the core libraries required for audio processing and networking:
 
 ```bash
 pip install -r requirements.txt
 ```
 
 3. Special Hardware Configuration (PyAudio)
-If the standard installation fails for pyaudio (common on Windows systems), execute the following commands to install the pre-compiled binary:
+   If the standard installation fails for pyaudio (common on Windows systems), execute the following commands to install the pre-compiled binary:
 
 ```bash
 pip install pipwin
 pipwin install pyaudio
 ```
 
-4. API Configuration
-The system requires a Deepgram API key for the Speech-to-Text engine.
+4.  API Configuration
+    The system requires a Deepgram API key and a google AI studio API key .
 
-    - Create a file named config.py in the root directory.
+        - Create a file named config.py in the root directory.
 
-    - Add your API key in the following Python format:
+        - Add your API keys in the following Python format:
 
 ```python
 API_KEY = "YOUR_DEEPGRAM_API_KEY_HERE"
+Interviewer_API_KEY = "YOUR_GOOGLE_API_KEY_HERE"
 ```
 
 5. Running the Module
-To verify the setup and test the microphone pipeline:
+   To verify the setup and test the microphone pipeline:
 
 ```bash
 python your_filename.py
