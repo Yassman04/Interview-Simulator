@@ -1,79 +1,29 @@
-import json
-import threading
-import pyaudio
-from websockets.sync.client import connect
+import requests
 from config import API_KEY
 
-def listen_to_user():
-    audio = pyaudio.PyAudio()
-    device_info = audio.get_default_input_device_info()
-    native_rate = int(device_info['defaultSampleRate'])
+def transcribe_audio_file(file_path):
+    """Sends a saved audio file to Deepgram and returns the text."""
     
-    stream = audio.open(
-        format=pyaudio.paInt16,
-        channels=1,
-        rate=native_rate,
-        input=True,
-        frames_per_buffer=4096
-    )
-
-    URL = (
-        f"wss://api.deepgram.com/v1/listen"
-        f"?model=nova-2"
-        f"&encoding=linear16"
-        f"&sample_rate={native_rate}"
-        f"&channels=1"
-        f"&smart_format=true"
-    )
-
-    headers = {"Authorization": f"Token {API_KEY}"}
+    # We use the standard REST API instead of the streaming websocket
+    url = "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true"
     
-    full_answer = ""
-    is_recording = True
-
-    print("\n===== ANSWERING =====")
-
-    with connect(URL, additional_headers=headers) as ws:
-        
-        def receive_transcripts():
-            nonlocal full_answer
-            try:
-                for message in ws:
-                    result = json.loads(message)
-                    if 'channel' in result:
-                        transcript = result['channel']['alternatives'][0]['transcript']
-                        if transcript and result.get('is_final'):
-                            full_answer += transcript + " "
-            except Exception:
-                pass
-
-        def send_audio():
-            try:
-                while is_recording:
-                    data = stream.read(4096, exception_on_overflow=False)
-                    if data:
-                        ws.send(data)
-            except Exception:
-                pass
-
-        receiver_thread = threading.Thread(target=receive_transcripts)
-        sender_thread = threading.Thread(target=send_audio)
-        
-        receiver_thread.start()
-        sender_thread.start()
-
-        input("Press ENTER when you are finished answering\n")
-        
-        is_recording = False 
-        sender_thread.join()
-
-        # Finalize the stream to capture remaining buffer
-        ws.send(json.dumps({"type": "CloseStream"}))
-        receiver_thread.join()
-
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
+    headers = {
+        "Authorization": f"Token {API_KEY}",
+        "Content-Type": "audio/webm"
+    }
+    
+    try:
+        # Open the webm file and send it to Deepgram
+        with open(file_path, "rb") as audio_file:
+            response = requests.post(url, headers=headers, data=audio_file)
             
-    return full_answer.strip()
-
+        response.raise_for_status()
+        data = response.json()
+        
+        # Dig into the Deepgram response to grab the exact words
+        transcript = data['results']['channels'][0]['alternatives'][0]['transcript']
+        return transcript
+        
+    except Exception as e:
+        print(f"Deepgram Error: {e}")
+        return "Error transcribing audio."
