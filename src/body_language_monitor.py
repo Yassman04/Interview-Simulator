@@ -28,7 +28,7 @@ while cap.isOpened():
     results = detector.detect(mp_image)
 
     if results.hand_landmarks:
-        # Fixed spelling from 'hand_lanmarks' to 'hand_landmarks'
+
         for hand_landmarks in results.hand_landmarks:
             index_tip = hand_landmarks[8]
             x, y = int(index_tip.x * w), int(index_tip.y * h)
