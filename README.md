@@ -1,4 +1,4 @@
-# Interview Simulator 🎙️
+# Interview Simulator 
 
 A fully interactive, web-based interview simulator powered by advanced AI and computer vision. This application streams live audio, generates human-like vocal responses, evaluates transcript answers, and analyzes physical body language in real time to provide comprehensive interview feedback.
 
