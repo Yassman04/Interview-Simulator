@@ -3,86 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Simulator | Setup</title>
-    <style>
-        /* Modern, clean CSS styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h1 {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #34495e;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-            box-sizing: border-box; 
-            font-size: 16px;
-        }
-        input:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <title> Interview Simulator | Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <div class="card">
-        <h1>AI Interview Simulator</h1>
-        <p>Configure your mock interview session.</p>
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+
+    <div class="container">
+        <h1> Interview Simulator</h1>
 
         <form action="/" method="POST">
-            
             <div class="input-group">
                 <label for="job_role">Target Job Role</label>
                 <input type="text" id="job_role" name="job_role" placeholder="e.g., Nurse, Software Engineer" required>
@@ -97,5 +28,6 @@
         </form>
     </div>
 
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

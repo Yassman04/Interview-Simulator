@@ -3,60 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Simulator | Feedback</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 20px;
-        }
-        .evaluation-content {
-            line-height: 1.6;
-            color: #34495e;
-            margin-bottom: 40px;
-        }
-        .evaluation-content h3 {
-            color: #2980b9;
-            margin-top: 30px;
-        }
-        .home-btn {
-            display: block;
-            width: 200px;
-            margin: 0 auto;
-            background-color: #27ae60;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .home-btn:hover {
-            background-color: #2ecc71;
-        }
-    </style>
+    <title> Interview Simulator | Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
 
     <div class="container">
         <div class="header">
@@ -68,8 +20,9 @@
             {{ evaluation | safe }}
         </div>
 
-        <a href="/" class="home-btn">Start New Interview</a>
+        <a href="/" class="btn-link">Start New Interview</a>
     </div>
 
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ import os
 app = Flask(__name__)
 app.secret_key = "interview_simulator_secret_key"
 
+# Note: FIX VOICE SETTINGS BUTTON
+
 
 # 1. The Setup / Login Page
 @app.route("/", methods=["GET", "POST"])

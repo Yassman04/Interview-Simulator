@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Simulator | Live Room</title>
-    
+    <title> Interview Simulator | Room</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
-    
 </head>
 <body>
 
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+
     <div class="container">
         <div class="header">
-            <button id="settings-btn" class="settings-btn">⚙️ Voice Settings</button>
+            <button id="settings-btn" class="settings-btn" style="width: auto; margin-bottom: 15px;">⚙️ Voice Settings</button>
             
-            <div id="settings-menu" class="settings-menu">
+            <div id="settings-menu" class="settings-menu" style="display: none; text-align: left; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px;">
                 <h3>Audio Preferences</h3>
                 
-                <div class="setting-group">
-                    <button id="audio-toggle" class="audio-toggle">🔊 Voice is ON</button>
+                <div class="setting-group" style="margin-bottom: 15px;">
+                    <button id="audio-toggle" class="audio-toggle" style="width: auto; margin: 0;">🔊 Voice is ON</button>
                 </div>
 
-                <div class="setting-group">
+                <div class="setting-group" style="margin-bottom: 15px;">
                     <h4>Female Voices</h4>
-                    <label><input type="radio" name="voice_select" value="aura-asteria-en" checked> Asteria (US English)</label>
-                    <label><input type="radio" name="voice_select" value="aura-luna-en"> Luna (US English)</label>
+                    <label><input type="radio" name="voice_select" value="aura-asteria-en" checked> Asteria (US English)</label><br>
+                    <label><input type="radio" name="voice_select" value="aura-luna-en"> Luna (US English)</label><br>
                     <label><input type="radio" name="voice_select" value="aura-athena-en"> Athena (US English)</label>
                 </div>
 
                 <div class="setting-group">
                     <h4>Male Voices</h4>
-                    <label><input type="radio" name="voice_select" value="aura-arcas-en"> Arcas (US English)</label>
-                    <label><input type="radio" name="voice_select" value="aura-perseus-en"> Perseus (US English)</label>
-                    <label><input type="radio" name="voice_select" value="aura-orpheus-en"> Orpheus (US English)</label>
-                    <label><input type="radio" name="voice_select" value="aura-zeus-en"> Zeus (US English)</label>
-                    <label><input type="radio" name="voice_select" value="aura-helios-en"> Helios (UK English)</label>
+                    <label><input type="radio" name="voice_select" value="aura-arcas-en"> Arcas (US English)</label><br>
+                    <label><input type="radio" name="voice_select" value="aura-perseus-en"> Perseus (US English)</label><br>
+                    <label><input type="radio" name="voice_select" value="aura-orpheus-en"> Orpheus (US English)</label><br>
+                    <label><input type="radio" name="voice_select" value="aura-zeus-en"> Zeus (US English)</label><br>
+                    <label><input type="radio" name="voice_select" value="aura-helios-en"> Helios (UK English)</label><br>
                     <label><input type="radio" name="voice_select" value="aura-angus-en"> Angus (Irish English)</label>
                 </div>
             </div>
@@ -48,10 +48,8 @@
 
         <div class="main-content">
             <div class="video-section">
-                <div style="position: relative; width: 100%; max-width: 400px; border-radius: 8px; overflow: hidden; border: 3px solid #bdc3c7;">
-                    <video id="webcam" autoplay playsinline muted style="width: 100%; display: block;"></video>
-                    <canvas id="output_canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-                </div>
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="output_canvas" style="display: none;"></canvas>
             </div>
 
             <div class="chat-section">
@@ -59,13 +57,11 @@
                     <p class="interviewer-msg">
                         <strong>Interviewer:</strong> <span id="current-question">{{ first_question }}</span>
                     </p>
-                    <button class="play-audio-btn" onclick="playFirstQuestion()">
-                        🔊 Listen to Question
-                    </button>
+                    <button class="play-audio-btn" onclick="playFirstQuestion()" style="width: auto; padding: 8px 16px; margin-top: 5px;">🔊 Listen</button>
                 </div>
                 
                 <button class="record-btn" id="record-btn">Click to Speak</button>
-                <a href="/feedback" class="finish-btn" id="finish-btn">Finish Interview</a>
+                <a href="/feedback" class="btn-link" id="finish-btn" style="display: block; width: 100%;">Finish Interview</a>
             </div>
         </div>
     </div>
@@ -75,6 +71,7 @@
     </script>
     
     <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 
 </body>
 </html>
