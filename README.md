@@ -16,7 +16,7 @@ Following a consultation with my project supervisor, this project is being submi
 
 Other alternatives were evaluated and dismissed:
 1. **Alternative 1: Non-Confidential Submission with Keys:** Rejected due to the severe security risk of exposing active API keys to the broader student cohort or public.
-2. **Alternative 2: Submitting Without Keys:** Rejected because it would require the grading examiner to register for third-party developer accounts and set up their own billing quotas just to run the application, which creates unacceptable friction.
+2. **Alternative 2: Submitting Without Keys:** Rejected because it would require the grading examiner to register for third-party developer accounts and set up accounts just to run the application, which creates unnecessary actions.
 
 *(Note: To maintain long-term security, the provided API keys will be permanently deactivated immediately after the grading period concludes).*
 
