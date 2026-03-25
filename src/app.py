@@ -5,6 +5,7 @@ from feedback import generate_web_feedback
 from interviewer import generate_questions
 from threading import Timer
 import webbrowser
+import json
 import os
 
 app = Flask(__name__)
@@ -68,12 +69,24 @@ def process_audio():
 
     current_index = session.get("current_question_index", 0)
     questions = session.get("questions", [])
+    
+    # --- FIX 1: Tell Python what the current question actually is! ---
+    current_question = questions[current_index]
 
-    # 2. Save the question and answer pair to the transcript
-    if current_index < len(questions):
-        session["transcript"].append({"q": questions[current_index], "a": transcript})
-        session["current_question_index"] += 1
-        session.modified = True  # Tells Flask to safely update the memory
+    # Catch the body language scorecard from the browser
+    raw_metrics = request.form.get('metrics', '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}')
+    metrics = json.loads(raw_metrics)
+
+    # 2. Save the text AND the body language to the session transcript
+    session['transcript'].append({
+        "q": current_question,
+        "a": transcript,
+        "metrics": metrics 
+    })
+    
+    # --- FIX 2: Move the interview forward to the next question! ---
+    session["current_question_index"] += 1
+    session.modified = True
 
     # 3. Figure out what the next question is
     next_index = session["current_question_index"]
@@ -84,13 +97,13 @@ def process_audio():
         next_question = "That concludes our interview! Thank you for your time. Please click 'Finish Interview' to see your final feedback."
         is_finished = True
 
-    # --- NEW: Catch the voice selection from the web browser! ---
+    # Catch the voice selection from the web browser
     selected_voice = request.form.get("voice_model", "aura-asteria-en")
 
     print(f"Generating human voice using {selected_voice}...")
     audio_data = generate_human_audio(next_question, selected_voice)
 
-    # 4. Send everything back to the webpage!
+    # 4. Send everything back to the webpage
     return {
         "status": "success",
         "transcript": transcript,
