@@ -10,26 +10,26 @@ def generate_web_feedback(transcript, job_role):
     if not transcript:
         return "<p>No questions were answered during this session.</p>"
 
-    # 1. Format the transcript AND calculate the body language percentages
+    # 1. Format the transcript AND check if the camera was actually used
     conversation = ""
     for i, entry in enumerate(transcript, 1):
         q = entry.get('q', 'Unknown Question')
         a = entry.get('a', 'No answer recorded.')
         metrics = entry.get('metrics', {'totalFrames': 0, 'faceVisible': 0, 'handsVisible': 0})
         
-        # Turn raw frame counts into easy-to-read percentages
+        # Check if the camera was on and capturing frames
         total = metrics.get('totalFrames', 0)
         if total > 0:
             face_pct = round((metrics.get('faceVisible', 0) / total) * 100)
             hands_pct = round((metrics.get('handsVisible', 0) / total) * 100)
+            body_language_data = f"Face visible/Eye contact maintained {face_pct}% of the time. Hand gestures used {hands_pct}% of the time."
         else:
-            face_pct = 0
-            hands_pct = 0
+            
+            body_language_data = "No camera feed was detected. The user declined camera access or does not have a webcam. Do NOT evaluate or penalize body language for this question."
             
         conversation += f"<strong>Q{i}:</strong> {q}<br>"
         conversation += f"<strong>Answer:</strong> {a}<br>"
-        # Add the hidden metrics block for Gemini to read
-        conversation += f"<em>[System Data - Body Language: Face visible/Eye contact maintained {face_pct}% of the time. Hand gestures used {hands_pct}% of the time.]</em><br><br>"
+        conversation += f"<em>[System Data: {body_language_data}]</em><br><br>"
 
     # 2. Give Gemini strict instructions to grade both spoken words and physical presence
     prompt = f"""

@@ -11,9 +11,6 @@ import os
 app = Flask(__name__)
 app.secret_key = "interview_simulator_secret_key"
 
-# Note: FIX VOICE SETTINGS BUTTON
-
-
 # 1. The Setup / Login Page
 @app.route("/", methods=["GET", "POST"])
 def setup():
@@ -71,21 +68,21 @@ def process_audio():
 
     current_index = session.get("current_question_index", 0)
     questions = session.get("questions", [])
-    
+
     # --- FIX 1: Tell Python what the current question actually is! ---
     current_question = questions[current_index]
 
     # Catch the body language scorecard from the browser
-    raw_metrics = request.form.get('metrics', '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}')
+    raw_metrics = request.form.get(
+        "metrics", '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}'
+    )
     metrics = json.loads(raw_metrics)
 
     # 2. Save the text AND the body language to the session transcript
-    session['transcript'].append({
-        "q": current_question,
-        "a": transcript,
-        "metrics": metrics 
-    })
-    
+    session["transcript"].append(
+        {"q": current_question, "a": transcript, "metrics": metrics}
+    )
+
     # --- FIX 2: Move the interview forward to the next question! ---
     session["current_question_index"] += 1
     session.modified = True
