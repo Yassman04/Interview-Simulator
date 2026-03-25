@@ -1,29 +1,37 @@
-// --- Settings Menu Logic ---
+// --- 1. SETTINGS & UI MENU LOGIC --- //
+
 const settingsBtn = document.getElementById('settings-btn');
 const settingsMenu = document.getElementById('settings-menu');
 
+// Toggle the voice settings dropdown menu
 settingsBtn.addEventListener('click', () => {
     settingsMenu.classList.toggle('show');
 });
 
+// Close the settings menu if the user clicks anywhere outside of it
 document.addEventListener('click', (event) => {
     if (!settingsBtn.contains(event.target) && !settingsMenu.contains(event.target)) {
         settingsMenu.classList.remove('show');
     }
 });
 
+
+// --- 2. VOICE PREFERENCES & PLAYBACK --- //
+
 let selectedVoiceModel = "aura-asteria-en";
 const voiceRadios = document.querySelectorAll('input[name="voice_select"]');
 
-// FIX 1: This is the corrected voice radio section
+// Listen for changes to the voice selection radio buttons
 voiceRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
         selectedVoiceModel = e.target.value;
-        window.INITIAL_AUDIO_DATA = null; // Destroys the hoarded audio when you click a new voice!
+        // Destroy the hoarded audio payload so the app knows to fetch a new 
+        // audio file with the newly selected voice model
+        window.INITIAL_AUDIO_DATA = null; 
     });
 });
 
-// --- Voice Toggle Logic ---
+// Voice Toggle (Mute/Unmute) Logic
 let currentAudio = null;
 let isVoiceEnabled = true;
 const voiceToggleBtn = document.getElementById('audio-toggle');
@@ -38,25 +46,28 @@ voiceToggleBtn.addEventListener('click', () => {
         voiceToggleBtn.textContent = "🔇 Voice is OFF";
         voiceToggleBtn.style.backgroundColor = "#95a5a6"; 
         
+        // Immediately stop speaking if the user mutes mid-sentence
         if (currentAudio) {
             currentAudio.pause();
         }
     }
 });
 
-// --- Dynamic Audio Fetching ---
+// Dynamic Audio Fetching for the "Listen" Button
 async function playFirstQuestion() {
     if (!isVoiceEnabled) return; 
     
     const firstAudioData = window.INITIAL_AUDIO_DATA; 
     
+    // Check if we already have the audio pre-loaded from Python
     if (firstAudioData && firstAudioData !== "None") {
         if (currentAudio) currentAudio.pause();
         currentAudio = new Audio("data:audio/mp3;base64," + firstAudioData);
         currentAudio.play();
-        return; // Exit early since we played the initial audio
+        return; 
     }
 
+    // If no pre-loaded audio exists, fetch it via API
     const questionText = document.getElementById('current-question').innerText;
     const playBtn = document.querySelector('.play-audio-btn');
     
@@ -75,6 +86,7 @@ async function playFirstQuestion() {
 
         const data = await response.json();
 
+        // Play the freshly generated audio
         if (data.audio_base64) {
             if (currentAudio) currentAudio.pause();
             currentAudio = new Audio("data:audio/mp3;base64," + data.audio_base64);
@@ -84,22 +96,26 @@ async function playFirstQuestion() {
         console.error("Audio error:", error);
     }
 
-    playBtn.textContent = "🔊 Listen to Question";
+    // Reset button state
+    playBtn.textContent = "🔊 Listen";
     playBtn.disabled = false;
 }
 
-// --- MEDIAPIPE HOLISTIC COMPUTER VISION LOGIC ---
+
+// --- 3. MEDIAPIPE HOLISTIC COMPUTER VISION LOGIC --- //
+
 const videoElement = document.getElementById('webcam');
 const canvasElement = document.getElementById('output_canvas');
 const canvasCtx = canvasElement.getContext('2d');
 
-// digital scorecard
+// Digital scorecard to track presence and gestures
 let bodyMetrics = {
     totalFrames: 0,
     faceVisible: 0,
     handsVisible: 0
 };
 
+// Initialize Google MediaPipe Holistic Model
 const holistic = new Holistic({locateFile: (file) => {
     return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
 }});
@@ -112,6 +128,7 @@ holistic.setOptions({
     minTrackingConfidence: 0.5
 });
 
+// Event Listener: Fires every time the camera captures a frame
 holistic.onResults(function(results) {
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
@@ -119,7 +136,7 @@ holistic.onResults(function(results) {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     
-    // This draws the connections on the face and the hands, remove comment to see how it tracks body language
+    // Note: Remove these comments to visually draw the tracking skeleton on the canvas
     /*
     if (results.faceLandmarks) {
         drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {color: '#27ae6050', lineWidth: 1});
@@ -135,11 +152,12 @@ holistic.onResults(function(results) {
     if (results.rightHandLandmarks) {
         drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS, {color: '#f1c40f', lineWidth: 2});
         drawLandmarks(canvasCtx, results.rightHandLandmarks, {color: '#f39c12', lineWidth: 1, radius: 2});
-    }*/
+    }
+    */
 
     canvasCtx.restore();
 
-    // Tally the scorecard ONLY while the user is recording!
+    // Tally the scorecard only while the user is actively recording an answer!
     if (isRecording) {
         bodyMetrics.totalFrames++;
         if (results.faceLandmarks) bodyMetrics.faceVisible++;
@@ -147,6 +165,7 @@ holistic.onResults(function(results) {
     }
 });
 
+// Start the webcam feed and stream it into the MediaPipe model
 const camera = new Camera(videoElement, {
     onFrame: async () => {
         await holistic.send({image: videoElement});
@@ -156,47 +175,54 @@ const camera = new Camera(videoElement, {
 });
 camera.start();
 
-// --- MICROPHONE & INTERVIEW LOGIC ---
+
+// --- 4. MICROPHONE & INTERVIEW PROGRESSION LOGIC --- //
+
 const recordBtn = document.getElementById('record-btn');
 let isRecording = false;
 let mediaRecorder;
 let audioChunks = [];
 
 recordBtn.addEventListener('click', async () => {
+    // Cut off the interviewer if they are currently speaking
     if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
     }
 
+    // START RECORDING STATE
     if (!isRecording) {
         try {
+            // Request microphone access
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
 
-            // Reset the scorecard to zero for the new question!
+            // Reset the body language scorecard for this specific question
             bodyMetrics = { totalFrames: 0, faceVisible: 0, handsVisible: 0 };
 
+            // Collect audio data chunks as they are generated
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     audioChunks.push(event.data);
                 }
             };
 
+            // Behavior when recording is stopped
             mediaRecorder.onstop = () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 
-                recordBtn.textContent = "Grading Answer...";
+                recordBtn.textContent = "Grading Answer... ⏳";
                 recordBtn.style.backgroundColor = "#f39c12"; 
                 recordBtn.disabled = true;
 
+                // Package audio, body language metrics, and voice model into a single payload
                 const formData = new FormData();
                 formData.append('audio', audioBlob, 'answer.webm');
                 formData.append('voice_model', selectedVoiceModel);
-                
-                
                 formData.append('metrics', JSON.stringify(bodyMetrics));
 
+                // Send the payload to the Python backend
                 fetch('/process_audio', {
                     method: 'POST',
                     body: formData
@@ -205,6 +231,7 @@ recordBtn.addEventListener('click', async () => {
                 .then(data => {
                     const chatBox = document.getElementById('chat-window');
                     
+                    // 1. Append User's transcribed answer to the chat
                     if (data.transcript) {
                         const userMessage = document.createElement('p');
                         userMessage.className = "user-msg";
@@ -212,14 +239,17 @@ recordBtn.addEventListener('click', async () => {
                         chatBox.appendChild(userMessage);
                     }
                     
+                    // 2. Append the next question to the chat
                     if (data.next_question) {
                         const aiMessage = document.createElement('p');
                         aiMessage.className = "interviewer-msg";
                         aiMessage.innerHTML = `<strong>Interviewer:</strong> ${data.next_question}`;
                         chatBox.appendChild(aiMessage);
                         
+                        // Clear initial audio since we are moving to the next question
                         window.INITIAL_AUDIO_DATA = null; 
                         
+                        // Auto-play the next question's audio
                         if (data.audio_base64 && isVoiceEnabled) {
                             if (currentAudio) currentAudio.pause();
                             currentAudio = new Audio("data:audio/mp3;base64," + data.audio_base64);
@@ -227,8 +257,10 @@ recordBtn.addEventListener('click', async () => {
                         }
                     }
 
+                    // Auto-scroll the chat window to the bottom
                     chatBox.scrollTop = chatBox.scrollHeight;
                     
+                    // 3. Update the UI state based on interview progress
                     if (data.is_finished) {
                         recordBtn.textContent = "Interview Complete";
                         recordBtn.style.backgroundColor = "#27ae60"; 
@@ -244,6 +276,7 @@ recordBtn.addEventListener('click', async () => {
                     recordBtn.disabled = false;
                 });
 
+                // Release the microphone stream
                 stream.getTracks().forEach(track => track.stop());
             };
 
@@ -257,16 +290,22 @@ recordBtn.addEventListener('click', async () => {
             console.error("Microphone access denied:", err);
             alert("Please allow microphone access to answer questions.");
         }
+        
+    // STOP RECORDING STATE
     } else {
         mediaRecorder.stop();
         isRecording = false;
     }
 });
 
-// --- Loading State for the Finish Button ---
+
+// --- 5. FINISH INTERVIEW LOADING STATE --- //
+
 const finishBtn = document.getElementById('finish-btn');
+
 finishBtn.addEventListener('click', function() {
     this.textContent = "Generating Feedback... ⏳";
     this.style.backgroundColor = "#f39c12"; 
+    // Prevent the user from clicking the button multiple times while Gemini thinks
     this.style.pointerEvents = "none"; 
 });

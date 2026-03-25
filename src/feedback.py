@@ -10,7 +10,7 @@ def generate_web_feedback(transcript, job_role):
     if not transcript:
         return "<p>No questions were answered during this session.</p>"
 
-    # 1. Format the transcript AND check if the camera was actually used
+    # 1. Format the transcript and check if the camera was actually used
     conversation = ""
     for i, entry in enumerate(transcript, 1):
         q = entry.get('q', 'Unknown Question')

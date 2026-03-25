@@ -2,7 +2,7 @@ import requests
 import base64
 from config import API_KEY
 
-# We added 'voice_model' as an input, defaulting to asteria just in case!
+# added 'voice_model' as an input, defaulting to asteria just in case!
 def generate_human_audio(text, voice_model="aura-asteria-en"):
     """Sends text to Deepgram Aura and returns base64 audio data."""
     
