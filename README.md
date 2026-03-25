@@ -8,9 +8,17 @@ A fully interactive, web-based interview simulator powered by advanced AI and co
 * **Real-Time Body Language Monitor:** Utilizes MediaPipe Holistic to track facial visibility and hand gestures silently in the background.
 * **Comprehensive Feedback:** Evaluates both spoken content and physical presentation, delivering a detailed HTML grading report.
 
-## Examiner Setup Instructions
+## Examiner Setup Instructions & API Key Rationale
 
-**Important Note Regarding API Keys:** For ease of grading, the required `.env` file containing active API keys has been intentionally included in this directory. You do not need to supply your own keys to test this application. 
+**API Key Handover Strategy:** For ease of grading, the required `.env` file containing active API keys (Google Gemini and Deepgram) has been intentionally included in this directory. You do not need to supply your own keys to test this application. 
+**Submission Rationale:**
+Following a consultation with my project supervisor, this project is being submitted via the **Confidential** portal. This approach was chosen to balance frictionless execution for the examiner with account security. 
+
+Other alternatives were evaluated and dismissed:
+1. **Alternative 1: Non-Confidential Submission with Keys:** Rejected due to the severe security risk of exposing active API keys to the broader student cohort or public.
+2. **Alternative 2: Submitting Without Keys:** Rejected because it would require the grading examiner to register for third-party developer accounts and set up their own billing quotas just to run the application, which creates unacceptable friction.
+
+*(Note: To maintain long-term security, the provided API keys will be permanently deactivated immediately after the grading period concludes).*
 
 ### 1. Install Dependencies
 Open your terminal in this project folder and install the required Python packages:
