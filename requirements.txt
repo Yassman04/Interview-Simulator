@@ -1,5 +1,4 @@
-pyaudio
-websockets
-mediapipe
-opencv-python
-google-genai
+Flask==3.0.2
+google-genai==0.3.0
+python-dotenv==1.0.1
+deepgram-sdk==3.4.0
