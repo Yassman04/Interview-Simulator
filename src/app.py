@@ -12,7 +12,7 @@ from interviewer import generate_questions
 
 # --- FLASK APPLICATION SETUP --- #
 app = Flask(__name__)
-app.secret_key = "interview_simulator_secret_key"
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_developer_key")
 
 
 # --- ROUTE 1: CONFIGURATION & SETUP --- #
