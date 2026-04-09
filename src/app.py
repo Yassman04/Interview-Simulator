@@ -97,6 +97,11 @@ def process_audio():
     raw_metrics = request.form.get(
         "metrics", '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}'
     )
+
+    # --- ADD THESE TWO LINES TO GRAB YOUR JSON FOR THE REPORT ---
+    print("\n--- EXACT JSON PAYLOAD FOR CHAPTER 5 ---")
+    print(raw_metrics)
+    
     metrics = json.loads(raw_metrics)
 
     # 5. Update the running transcript with Question, Answer, and Metrics
