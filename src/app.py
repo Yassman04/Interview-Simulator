@@ -19,7 +19,7 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_developer_key")
 @app.route("/", methods=["GET", "POST"])
 def setup():
     """
-    Handles the landing page. Captures the user's target job role and desired 
+    Handles the landing page. Captures the user's target job role and desired
     interview length, generates the questions via Gemini, and stores them in the session.
     """
     if request.method == "POST":
@@ -32,7 +32,7 @@ def setup():
         session["num_questions"] = num_questions
 
         print(f"Generating {num_questions} questions for {job_role}...")
-        
+
         # Pre-generate all interview questions using the Gemini API
         session["questions"] = generate_questions(job_role, num_questions)
         session["current_question_index"] = 0
@@ -74,7 +74,7 @@ def interview():
 def process_audio():
     """
     The core logic loop of the application. Receives a user's audio response and
-    body language metrics, transcribes the audio via Deepgram, appends the data 
+    body language metrics, transcribes the audio via Deepgram, appends the data
     to the transcript, and returns the next question and its audio payload.
     """
     # 1. Validation & File Handling
@@ -85,7 +85,7 @@ def process_audio():
     save_path = os.path.join("src", "temp_answer.webm")
     audio_file.save(save_path)
 
-    # 2. Transcription 
+    # 2. Transcription
     transcript = transcribe_audio_file(save_path)
 
     # 3. Retrieve current state from session memory
@@ -98,10 +98,10 @@ def process_audio():
         "metrics", '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}'
     )
 
-    # --- ADD THESE TWO LINES TO GRAB YOUR JSON FOR THE REPORT ---
+    # --- GRABS JSON PAYLOAD ---
     print("\n--- EXACT JSON PAYLOAD FOR CHAPTER 5 ---")
     print(raw_metrics)
-    
+
     metrics = json.loads(raw_metrics)
 
     # 5. Update the running transcript with Question, Answer, and Metrics
@@ -158,7 +158,7 @@ def get_audio():
 @app.route("/feedback")
 def feedback():
     """
-    Renders the final results page. Passes the complete transcript (including 
+    Renders the final results page. Passes the complete transcript (including
     text and body language data) to Gemini to generate a comprehensive evaluation.
     """
     # Security check: Ensure transcript exists before generating feedback
@@ -177,6 +177,7 @@ def feedback():
 # --- SERVER STARTUP --- #
 def open_browser():
     webbrowser.open_new("http://127.0.0.1:5000/")
+
 
 if __name__ == "__main__":
     # Ensure the browser only opens once, preventing duplicate tabs during auto-reload
