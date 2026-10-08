@@ -98,10 +98,6 @@ def process_audio():
         "metrics", '{"totalFrames": 0, "faceVisible": 0, "handsVisible": 0}'
     )
 
-    # --- GRABS JSON PAYLOAD ---
-    print("\n--- EXACT JSON PAYLOAD FOR CHAPTER 5 ---")
-    print(raw_metrics)
-
     metrics = json.loads(raw_metrics)
 
     # 5. Update the running transcript with Question, Answer, and Metrics

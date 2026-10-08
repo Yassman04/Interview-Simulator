@@ -13,5 +13,10 @@ dotenv_path = os.path.join(root_dir, ".env")
 # Load it
 load_dotenv(dotenv_path)
 
-API_KEY = os.getenv("API_KEY")
-Interviewer_API_KEY = os.getenv("Interviewer_API_KEY")
+# Keys are read using the names documented in .env.example.
+# The older names (API_KEY / Interviewer_API_KEY) still work as a fallback.
+API_KEY = os.getenv("DEEPGRAM_API_KEY") or os.getenv("API_KEY")  # Deepgram (speech-to-text and text-to-speech)
+Interviewer_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("Interviewer_API_KEY")  # Google Gemini (questions and feedback)
+
+if not API_KEY or not Interviewer_API_KEY:
+    print("Warning: DEEPGRAM_API_KEY and/or GEMINI_API_KEY are missing. Copy .env.example to .env and add your keys.")
