@@ -4,6 +4,8 @@
 
 Type in the job you're going for, and the simulator builds a set of interview questions for that exact role. An AI voice reads each question aloud, you answer by speaking (just as you would in a real interview), and your webcam tracks how present and expressive you are. At the end you get a written evaluation of both what you said and how you came across.
 
+![An interview in progress for a Backend Engineer role](docs/interview.png)
+
 ## Why it exists
 
 Most interview practice tools are text chatbots. Typing an answer is nothing like saying it under pressure to another person. This project recreates that pressure: you hear the question, you have to answer on the spot, and you're on camera.
@@ -29,6 +31,8 @@ flowchart LR
     F --> G
     G -->|after the last question| H[Gemini evaluation<br/>content + body language]
 ```
+
+![System architecture: browser, Flask backend and external APIs](docs/architecture.png)
 
 | Part | Technology |
 |---|---|
